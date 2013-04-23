@@ -54,7 +54,7 @@ def start(folder):
 		print("no slideshow")
 
 	sli.start(folder)
-	return "OK"
+	return list()
 
 @app.route('/list/<folder:path>')
 def list(folder="/"):
