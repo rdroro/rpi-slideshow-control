@@ -1,0 +1,9 @@
+<ul class="breadcrumb">
+	%for dic in path:
+		%for k, v in dic.iteritems():
+		<li>
+			<a href="{{v}}">{{k}}</a> <span class="divider">/</span>
+		</li>
+		%end
+	%end
+</ul>
