@@ -1,0 +1,3 @@
+#!/bin/bash
+CURRENT_DIR=$(dirname ${0})
+python ${CURRENT_DIR}/src/app.py ${CURRENT_DIR}/
