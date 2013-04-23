@@ -22,8 +22,6 @@ app = Bottle()
 config = {}
 execfile(generalPath+"conf/config.conf", config)
 
-path = [{config["mediaFolder"]: "/"}]
-
 
 sli = Slideshow(config["app"], config["mediaFolder"])
 fileO = ListFile(config["mediaFolder"])
@@ -40,26 +38,39 @@ fileO = ListFile(config["mediaFolder"])
 def server_static(filepath):
     return static_file(filepath, root='front')
 
+# root route
 @app.route('/')
 def hello():
 	return list()
 
+@app.route('/start/')
+def startRoot():
+	return start()
 
+# route to start slideshow
 @app.route('/start/<folder:path>')
 def start(folder="/"):
 	if sli.isSlide():
 		sli.stop()
 
 	sli.start(folder)
+	# return list(mediaFolder)
 	redirect("/")
 
+# Route to list contents of directory
 @app.route('/list/<folder:path>')
 def list(folder="/"):
+	breadcrumb  = [{"name":config["mediaFolder"], "url": "/"}]
+	if folder == "/":
+		folder = ""
+	else:
+		breadcrumb.append({"name": folder, "url": folder})
+
 	list_dir = fileO.list(folder)
-	return template(generalPath+"front/views/index.html", ls=list_dir, path=path, baseurl=generalPath, currentFolder=folder)
+	return template(generalPath+"front/views/index.html", ls=list_dir, breadcrumb=breadcrumb, baseurl=generalPath, currentFolder=folder)
 
-
-
-#run(app, host=config["host"], port=config["port"], debug=True, reloader=True)
-httpserver.serve(app, host=config["host"], port=config["port"])
+if config['mode'] == "dev":
+	run(app, host=config["host"], port=config["port"], debug=True, reloader=True)
+else:
+	httpserver.serve(app, host=config["host"], port=config["port"])
 

@@ -9,7 +9,11 @@ class ListFile:
 		ls = os.listdir(self.rootPath+path);
 		list_dir = []
 		for fi in ls:
-			inspectFile = path+"/"+fi
+			if path == "":
+				inspectFile = fi
+			else:
+				inspectFile = path+"/"+fi
+
 			if os.path.isdir(self.rootPath+inspectFile):
 				list_dir.append({"name": fi, "type":"dir", "link":inspectFile})
 			else:
