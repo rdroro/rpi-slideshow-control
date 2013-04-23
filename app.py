@@ -1,6 +1,7 @@
 # set lib/ in current path
 import sys
 sys.path.append("lib/")
+sys.path.append("src/")
 
 import subprocess
 import os
@@ -8,15 +9,17 @@ import logging
 
 from bottle import Bottle, route, run, template, static_file
 from paste import httpserver
-import util as util
+import util
+from slideshow import Slideshow
 
 # Bottle app initialization
-
 app = Bottle()
 
 config = util.readConf()
 path = [{config["mediaFolder"]: "/"}]
-currentSlideshow = "null"
+
+
+sli = Slideshow(config["mediaFolder"])
 
 # Route for static files like css, js or image
 @app.route('/static/<filepath:path>')
@@ -36,18 +39,13 @@ def hello():
 
 @app.route('/start/<folder:path>')
 def start(folder):
-	c = currentSlideshow
-	print(currentSlideshow)
-	if type(c) is subprocess.Popen:
+	if sli.isSlide():
 		print("Already in use")
-		c.terminate()
+		sli.stop()
 	else:
 		print("no slideshow")
 
-	app_ar = list(config["app"])
-	path = config["mediaFolder"]+folder
-	app_ar.append(path)
-	c = subprocess.Popen(app_ar)
+	sli.start(folder)
 	return "OK"
 
 @app.route('/info/<folder>')
