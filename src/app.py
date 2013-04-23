@@ -46,26 +46,20 @@ def hello():
 
 
 @app.route('/start/<folder:path>')
-def start(folder):
+def start(folder="/"):
 	if sli.isSlide():
-		print("Already in use")
 		sli.stop()
-	else:
-		print("no slideshow")
 
 	sli.start(folder)
-	return list()
+	redirect("/")
 
 @app.route('/list/<folder:path>')
 def list(folder="/"):
-	if folder == "/":
-		folder = ""
-
 	list_dir = fileO.list(folder)
-	return template(generalPath+"front/views/index.html", ls=list_dir, path=path, baseurl=generalPath)
+	return template(generalPath+"front/views/index.html", ls=list_dir, path=path, baseurl=generalPath, currentFolder=folder)
 
 
 
-run(app, host=config["host"], port=config["port"], debug=True, reloader=True)
-#httpserver.serve(app, host=config["host"], port=config["port"])
+#run(app, host=config["host"], port=config["port"], debug=True, reloader=True)
+httpserver.serve(app, host=config["host"], port=config["port"])
 
