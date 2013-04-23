@@ -7,10 +7,11 @@ import subprocess
 import os
 import logging	
 
-from bottle import Bottle, route, run, template, static_file
+from bottle import Bottle, route, run, template, static_file, redirect
 from paste import httpserver
 import util
 from slideshow import Slideshow
+from listFile import ListFile
 
 # Bottle app initialization
 app = Bottle()
@@ -20,6 +21,7 @@ path = [{config["mediaFolder"]: "/"}]
 
 
 sli = Slideshow(config["mediaFolder"])
+fileO = ListFile(config["mediaFolder"])
 
 # Route for static files like css, js or image
 @app.route('/static/<filepath:path>')
@@ -28,13 +30,7 @@ def server_static(filepath):
 
 @app.route('/')
 def hello():
-	ls = os.listdir(config["mediaFolder"]);
-	list_dir = []
-	for fi in ls:
-		if os.path.isdir(config["mediaFolder"]+fi):
-			list_dir.append(fi)
-
-	return template("front/views/index.html", ls=list_dir, path=path)
+	return list()
 
 
 @app.route('/start/<folder:path>')
@@ -48,13 +44,14 @@ def start(folder):
 	sli.start(folder)
 	return "OK"
 
-@app.route('/info/<folder>')
-def info(folder):
-	p_path = list(path)
-	p_path.append({folder: "/info/"+folder})
+@app.route('/list/<folder:path>')
+def list(folder="/"):
+	if folder == "/":
+		folder = ""
 
-	ls = os.listdir(config["mediaFolder"]+folder)
-	return template("front/views/info.html", ls=ls, path=p_path, folder = folder)
+	list_dir = fileO.list(folder)
+	return template("front/views/index.html", ls=list_dir, path=path)
+
 
 
 run(app, host=config["host"], port=config["port"], debug=True, reloader=True)
