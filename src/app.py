@@ -36,7 +36,7 @@ fileO = ListFile(config["mediaFolder"])
 # Route for static files like css, js or image
 @app.route('/static/<filepath:path>')
 def server_static(filepath):
-    return static_file(filepath, root='front')
+    return static_file(filepath, root=generalPath+'front')
 
 # root route
 @app.route('/')
