@@ -11,7 +11,7 @@ To start rpi-slideshow-control on boot please type this following line in cronta
 	@reboot /home/sysalia/code/rpi-slideshow-control/start
 </pre>
 
-## On Debian-like
+### On Debian-like
 
 On Debian-like OS, you can follow these steps:
 
