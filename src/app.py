@@ -26,6 +26,8 @@ execfile(generalPath+"conf/config.conf", config)
 sli = Slideshow(config["app"], config["mediaFolder"])
 fileO = ListFile(config["mediaFolder"])
 
+webapp = generalPath+"webapp/"
+
 
 
 
@@ -36,7 +38,7 @@ fileO = ListFile(config["mediaFolder"])
 # Route for static files like css, js or image
 @app.route('/static/<filepath:path>')
 def server_static(filepath):
-    return static_file(filepath, root=generalPath+'front')
+    return static_file(filepath, root=webapp)
 
 # root route
 @app.route('/')
@@ -67,7 +69,7 @@ def list(folder="/"):
 		breadcrumb.append({"name": folder, "url": folder})
 
 	list_dir = fileO.list(folder)
-	return template(generalPath+"front/views/index.html", ls=list_dir, breadcrumb=breadcrumb, baseurl=generalPath, currentFolder=folder)
+	return template(webapp+"views/index.html", ls=list_dir, breadcrumb=breadcrumb, baseurl=generalPath, currentFolder=folder)
 
 if config['mode'] == "dev":
 	run(app, host=config["host"], port=config["port"], debug=True, reloader=True)
